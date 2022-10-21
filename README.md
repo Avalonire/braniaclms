@@ -1,0 +1,2 @@
+# braniaclms
+Educational Django project
