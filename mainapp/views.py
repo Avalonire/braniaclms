@@ -90,3 +90,7 @@ class NewsWithPaginatorView(NewsView):
         context = super().get_context_data(page=page, **kwargs)
         context["page_num"] = page
         return context
+
+
+# def index(request):
+#     return HttpResponse("<h2>Main</h2>")
