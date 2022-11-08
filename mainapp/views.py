@@ -92,5 +92,3 @@ class NewsWithPaginatorView(NewsView):
         return context
 
 
-# def index(request):
-#     return HttpResponse("<h2>Main</h2>")
