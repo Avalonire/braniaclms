@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.generic import TemplateView
-from datetime import datetime
+
+from mainapp.models import News
 
 
 class ContactsView(TemplateView):
@@ -54,33 +55,7 @@ class NewsView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        context_data['news'] = [
-            {
-                'title': 'News one',
-                'preview': 'Preview to the news one',
-                'date': datetime.now()
-            }, {
-                'title': 'News two',
-                'preview': 'Preview to the news two',
-                'date': datetime.now()
-            }, {
-                'title': 'News three',
-                'preview': 'Preview to the news three',
-                'date': datetime.now()
-            }, {
-                'title': 'News four',
-                'preview': 'Preview to the news four',
-                'date': datetime.now()
-            }, {
-                'title': 'News five',
-                'preview': 'Preview to the news five',
-                'date': datetime.now()
-            }, {
-                'title': 'News six',
-                'preview': 'Preview to the news six',
-                'date': datetime.now()
-            }
-        ]
+        context_data['news'] = News.objects.filter(deleted=False)
         return context_data
 
 
@@ -91,6 +66,16 @@ class NewsWithPaginatorView(NewsView):
         context["page_num"] = page
         return context
 
+
+class NewsDetail(TemplateView):
+    template_name = 'mainapp/news_detail.html'
+
+    """функцию get_object_or_404 не находит в стандартном пакете, необходимо сделать отдельно"""
+
+    def get_context_data(self, page, **kwargs):
+        context_data = super().get_context_data(page=page, **kwargs)
+        context_data['object'] = get_object_or_404(News, pk=self.kwags.get('pk'))
+        return context_data
 
 # def user(request):
 #     age = request.GET.get("age", 0)
