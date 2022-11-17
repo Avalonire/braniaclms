@@ -1,11 +1,12 @@
-{% extends 'authapp/base.html' %}
+{% extends 'mainapp/base.html' %}
 {% block content %}
 
-    <form method="POST" enctype="multipart/form-data">
+    <form class="col-6 m-auto pt-5 pb-5" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <p>
             <label for="id_username">
             </label><input type="text" name="username" autofocus=""
+                           value="{{ user.username }}"
                            autocapitalize="none" autocomplete="username"
                            maxlength="150" class="textinput textInput form-control"
                            required="" id="id_username" placeholder="Username">
@@ -13,27 +14,15 @@
         <p>
             <label for="id_email">
             </label><input type="text" name="email" autofocus=""
+                           value="{{ user.email }}"
                            autocapitalize="none" autocomplete="email"
                            maxlength="150" class="textinput textInput form-control"
                            required="" id="id_email" placeholder="Email">
         </p>
         <p>
-            <label for="id_password1">
-            </label><input type="password" name="password1"
-                           autocomplete="current-password"
-                           class="textinput textInput form-control" required=""
-                           id="id_password1" placeholder="Password">
-        </p>
-        <p>
-            <label for="id_password2">
-            </label><input type="password" name="password2"
-                           autocomplete="current-password"
-                           class="textinput textInput form-control" required=""
-                           id="id_password2" placeholder="Password confirm">
-        </p>
-        <p>
             <label>
                 <input type="text" name="first_name" autocapitalize="none"
+                       value="{{ user.first_name }}"
                        maxlength="150" class="textinput textInput form-control"
                        required="" placeholder="First name">
             </label>
@@ -41,6 +30,7 @@
         <p>
             <label>
                 <input type="text" name="last_name" autocapitalize="none"
+                       value="{{ user.last_name }}"
                        maxlength="150" class="textinput textInput form-control"
                        required="" placeholder="Last name">
             </label>
@@ -48,6 +38,7 @@
         <p>
             <label>
                 <input type="number" name="age" autocapitalize="none"
+                       value="{{ user.age }}"
                        class="textinput textInput form-control"
                        required="" placeholder="Age">
             </label>
@@ -62,19 +53,10 @@
 
         <p>
             <button type="submit" class="btn btn-primary btn-block">
-                Зарегистрироваться
+                Сохранить
             </button>
         </p>
     </form>
-
-    <div class="row justify-content-between">
-        <div class="col">
-            <a href="{% url 'authapp:login' %}"><small>войти</small></a>
-        </div>
-        <div class="col">
-            <a href="#"><small>Забыли пароль?</small></a>
-        </div>
-    </div>
 
 {% endblock %}
 
