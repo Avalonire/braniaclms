@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 """
@@ -20,6 +21,7 @@ class OverallSettings(models.Model):
 
     class Meta:
         abstract = True
+        ordering = ('-created_at',)
 
 
 class News(OverallSettings):
@@ -109,3 +111,27 @@ class CourseTeacher(OverallSettings):
     class Meta(OverallSettings.Meta):
         verbose_name = 'Курс к учителю'
         verbose_name_plural = 'Курсы к учителям'
+
+
+class CourseFeedback(OverallSettings):
+    RATINGS_FIVE = 5
+
+    RATINGS = (
+        (RATINGS_FIVE, '☆☆☆☆☆'),
+        (4, '☆☆☆☆'),
+        (3, '☆☆☆'),
+        (2, '☆☆'),
+        (1, '☆'),
+    )
+
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Курс')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Пользователь')
+    rating = models.PositiveSmallIntegerField(choices=RATINGS, default=RATINGS_FIVE, verbose_name='Рейтинг')
+    feedback = models.TextField(default='Без отзыва', verbose_name='Отзыв')
+
+    class Meta:
+        verbose_name = 'Отзыв'
+        verbose_name_plural = 'Отзывы'
+
+    def __str__(self):
+        return f'Отзыв на {self.course} от {self.user}'
