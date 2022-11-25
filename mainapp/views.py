@@ -1,9 +1,10 @@
-from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.http import JsonResponse
+from django.conf import settings
+from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMixin
+from django.http import JsonResponse, FileResponse
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
-from django.views.generic import TemplateView, ListView, UpdateView, DetailView, CreateView, DeleteView
+from django.views.generic import TemplateView, ListView, UpdateView, DetailView, CreateView, DeleteView, View
 
 from mainapp.forms import CourseFeedbackForm
 from mainapp.models import News, Course, Lesson, CourseTeacher, CourseFeedback
@@ -114,3 +115,31 @@ class CourseFeedbackCreateView(CreateView):
         self.object = form.save()
         render_template = render_to_string('mainapp/includes/feedback_card.html', context={'item': self.object})
         return JsonResponse({'card': render_template})
+
+
+class LogView(UserPassesTestMixin, TemplateView):
+    template_name = 'mainapp/logs.html'
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        log_lines = []
+        with open(settings.BASE_DIR / 'log/main_log.log') as log_file:
+            for i, line in enumerate(log_file):
+                if i == 1000:
+                    break
+                log_lines.insert(0, line)
+
+        context_data['logs'] = log_lines
+        return context_data
+
+
+class LogDownLoadView(UserPassesTestMixin, View):
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    def get(self, *args, **kwargs):
+        return FileResponse(open(settings.LOG_FILE, 'rb'))
