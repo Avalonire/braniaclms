@@ -1,12 +1,13 @@
-from django.contrib.auth.views import LogoutView
+from django.shortcuts import render
+from django.contrib.auth.views import LogoutView, LoginView
 from django.urls import reverse, reverse_lazy
-from django.views.generic import TemplateView, CreateView, UpdateView
+from django.views.generic import CreateView, UpdateView
 
 from authapp.forms import CustomUserCreationForm, CustomUserChangeForm
 from authapp.models import User
 
 
-class CustomLoginView(TemplateView):
+class CustomLoginView(LoginView):
     template_name = 'authapp/login.html'
     extra_context = {
         'title': 'Вход пользователя'
