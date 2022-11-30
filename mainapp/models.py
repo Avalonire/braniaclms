@@ -6,6 +6,8 @@ from django.db import models
 Оставил старую версию закомментированный на всякий случай.
 """
 
+NULLABLE = {'blank': True, 'null': True}
+
 
 class OverallSettings(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Создано')

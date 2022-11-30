@@ -70,11 +70,15 @@ class NewsWithPaginatorView(NewsView):
 class NewsDetail(TemplateView):
     template_name = 'mainapp/news_detail.html'
 
-    """функцию get_object_or_404 не находит в стандартном пакете, необходимо сделать отдельно"""
+    """функцию get_object_or_404 не находит в стандартном пакете, необходимо сделать отдельно видимо"""
+
+    def __init__(self, **kwargs):
+        super().__init__(kwargs)
+        self.kwargs = None
 
     def get_context_data(self, page, **kwargs):
         context_data = super().get_context_data(page=page, **kwargs)
-        context_data['object'] = get_object_or_404(News, pk=self.kwags.get('pk'))
+        context_data['object'] = (News, self.kwargs.get('pk'))
         return context_data
 
 # def user(request):
