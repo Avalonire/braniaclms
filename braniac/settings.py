@@ -26,10 +26,14 @@ SECRET_KEY = 'django-insecure-s090gwx8q++*0gs$5icn87r52#*@_xa)^(f52ywb0^tn3!dgn-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+
+if DEBUG:
+    INTERNAL_IPS = [
+        '127.0.0.1'
+    ]
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -39,8 +43,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'crispy_forms',
     'social_django',
+    'debug_toolbar',
     'mainapp',
-    'authapp'
+    'authapp',
 ]
 
 MIDDLEWARE = [
@@ -51,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'braniac.urls'
@@ -146,3 +152,67 @@ SOCIAL_AUTH_GITHUB_KEY = GITHUB_KEY
 SOCIAL_AUTH_GITHUB_SECRET = GITHUB_SECRET
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+LOG_FILE = BASE_DIR / 'log' / 'main_log.log'
+
+# Подключаем редис кеширование
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}
+
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+
+# # Настройки отправки для реального сервера (server based)
+# EMAIL_HOST = ''
+# EMAIL_PORT = 25
+# EMAIL_HOST_USER = ''
+# EMAIL_HOST_PASSWORD = ''
+# # для яндекса
+# EMAIL_USE_SSL = True
+# # для гугла
+# EMAIL_USE_TLS = True
+
+# Настройки для сохранения писем локально (file based)
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = 'emails-tmp'
+
+# LOGGING = {
+#     # Версия логирования
+#     "version": 1,
+#
+#     # флаг отключения текущих логгеров
+#     "disable_existing_loggers": False,
+#
+#     # форматирование вывода
+#     "formatters": {
+#         "console": {
+#             'format': '[%(asctime)s] %(levelname)s %(name)s (%(lineno)d) %(message)s'
+#         },
+#     },
+#     # какие логгеры используются
+#     'handlers': {
+#         'file': {
+#             'level': 'INFO',
+#             'class': 'logging.FileHandler',
+#             'filename': LOG_FILE,
+#             'formatter': 'console',
+#         },
+#         'console': {
+#             'class': 'logging.StreamHandler',
+#             'formatter': 'console',
+#         },
+#     },
+#     # подключение настроек для логгеров
+#     'loggers': {
+#         'django': {
+#             'level': 'INFO',
+#             'handlers': ['file', 'console']},
+#     },
+# }
