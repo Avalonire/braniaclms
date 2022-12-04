@@ -41,8 +41,8 @@ class News(OverallSettings):
 class Course(OverallSettings):
     title = models.CharField(max_length=256, verbose_name='Заголовок')
     description = models.TextField(verbose_name='Описание')
-
     cost = models.DecimalField(max_digits=8, decimal_places=2, verbose_name='Стоимость', default=0)
+    # cover = models.ImageField(verbose_name='лого')
 
     def __str__(self):
         return f'{self.title}'
