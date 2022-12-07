@@ -48,6 +48,7 @@ class ContactsView(TemplateView):
 
 
 class CoursesListView(ListView):
+    paginate_by = 5
     template_name = 'mainapp/courses_list.html'
     model = Course
 
@@ -104,23 +105,30 @@ class CourseDetailView(TemplateView):
         context_data['course_object'] = get_object_or_404(Course, pk=self.kwargs.get('pk'))
         context_data['lesson'] = Lesson.objects.filter(courses=context_data['course_object'])
         context_data['teachers'] = CourseTeacher.objects.filter(courses=context_data['course_object'])
-        feedback_list_key = f'course_feedback_{context_data["course_object"].pk}'
 
         # кешируем на низовом уровне, если кеша нет и выбираем из кеша, если он есть
-        cached_feedback_list = cache.get(feedback_list_key)
-        if cached_feedback_list is None:
-            context_data['feedback_list'] = CourseFeedback.objects.filter(course=context_data['course_object'])
-            cache.set(feedback_list_key, context_data['feedback_list'], timeout=300)
 
-            # Archive object for tests --->
-            import pickle
-
-            with open(f"mainapp/fixtures/news.bin", "wb") as outf:
-                pickle.dump(context_data["feedback_list"], outf)
-            # <--- Archive object for tests
-
-        else:
-            context_data['feedback_list']: cached_feedback_list
+        # feedback_list_key = f'course_feedback_{context_data["course_object"].pk}'
+        # cached_feedback_list = cache.get(feedback_list_key)
+        # if cached_feedback_list is None:
+        #     context_data['feedback_list'] = CourseFeedback.objects.filter(course=context_data['course_object'])
+        #     cache.set(feedback_list_key, context_data['feedback_list'], timeout=300)
+        #
+        #     # Archive object for tests --->
+        #     import pickle
+        #
+        #     with open(f"mainapp/fixtures/news.bin", "wb") as outf:
+        #         pickle.dump(context_data["feedback_list"], outf)
+        #     # <--- Archive object for tests
+        #
+        # else:
+        #     context_data['feedback_list']: cached_feedback_list
+        #
+        # if self.request.user.is_authenticated:
+        #     context_data['feedback_form'] = CourseFeedbackForm(
+        #         course=context_data['course_object'],
+        #         user=self.request.user
+        #     )
 
         if self.request.user.is_authenticated:
             context_data['feedback_form'] = CourseFeedbackForm(

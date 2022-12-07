@@ -57,7 +57,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
-    "django.middleware.locale.LocaleMiddleware",
+    'django.middleware.locale.LocaleMiddleware',
 ]
 
 ROOT_URLCONF = 'braniac.urls'
@@ -113,7 +113,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en-gb'
 
 TIME_ZONE = 'Europe/Moscow'
 
@@ -219,3 +219,5 @@ EMAIL_FILE_PATH = 'emails-tmp'
 # }
 
 LOCALE_PATHS = [BASE_DIR / 'locale']
+
+SELENIUM_DRIVER_PATH = BASE_DIR / 'selenium' / 'geckodriver'
