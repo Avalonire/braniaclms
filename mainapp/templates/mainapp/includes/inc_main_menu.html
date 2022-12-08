@@ -1,3 +1,5 @@
+{% load i18n %}
+
 <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
         <li class="nav-item {% if request.resolver_match.view_name == 'mainapp:news' %}active{% endif %}">

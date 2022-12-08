@@ -57,6 +57,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
+    "django.middleware.locale.LocaleMiddleware",
 ]
 
 ROOT_URLCONF = 'braniac.urls'
@@ -216,3 +217,5 @@ EMAIL_FILE_PATH = 'emails-tmp'
 #             'handlers': ['file', 'console']},
 #     },
 # }
+
+LOCALE_PATHS = [BASE_DIR / 'locale']
