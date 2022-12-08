@@ -2,14 +2,30 @@ from http import HTTPStatus
 
 from django.test import Client, TestCase
 from django.urls import reverse
+from django.core import mail as django_mail
+from django.conf import settings
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 
 from authapp import models as authapp_models
+from mainapp import tasks as mainapp_tasks
 from mainapp import models as mainapp_models
+
+from selenium.webdriver.common.by import By
+from selenium.webdriver.firefox.webdriver import WebDriver
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+
+
+class TestMainPage(TestCase):
+    def test_page_open(self):
+        path = reverse("mainapp:index")
+        result = self.client.get(path)
+        self.assertEqual(result.status_code, HTTPStatus.OK)
 
 
 class TestNewsPage(TestCase):
     fixtures = (
-        "authapp/fixtures/001_user_admin.json",
+        "authapp/fixtures/user_admin.json",
         "mainapp/fixtures/news.json",
     )
 
@@ -47,7 +63,7 @@ class TestNewsPage(TestCase):
             path,
             data={
                 "title": "NewTestNews001",
-                "preambule": "NewTestNews001",
+                "preamble": "NewTestNews001",
                 "body": "NewTestNews001",
             },
         )
@@ -74,7 +90,7 @@ class TestNewsPage(TestCase):
             path,
             data={
                 "title": new_title,
-                "preambule": news_obj.preambule,
+                "preamble": news_obj.preamble,
                 "body": news_obj.body,
             },
         )
@@ -94,3 +110,64 @@ class TestNewsPage(TestCase):
         self.client_with_auth.post(path)
         news_obj.refresh_from_db()
         self.assertTrue(news_obj.deleted)
+
+
+class TestTaskMailSend(TestCase):
+    fixtures = ("authapp/fixtures/user_admin.json",)
+
+    def test_mail_send(self):
+        message_text = "test_message_text"
+        mainapp_tasks.send_feedback_to_email(message_body='test_message_text')
+        self.assertEqual(django_mail.outbox[0].body, message_text)
+
+
+class TestNewsSelenium(StaticLiveServerTestCase):
+    fixtures = (
+        "authapp/fixtures/user_admin.json",
+        "mainapp/fixtures/news.json",
+    )
+
+    def setUp(self):
+        super().setUp()
+        self.selenium = WebDriver(executable_path=settings.SELENIUM_DRIVER_PATH)
+        self.selenium.implicitly_wait(10)
+        # Login
+        self.selenium.get(f"{self.live_server_url}{reverse('authapp:login')}")
+        button_enter = WebDriverWait(self.selenium, 5).until(
+            EC.visibility_of_element_located((By.CSS_SELECTOR, '[type="submit"]'))
+        )
+        self.selenium.find_element(By.ID, 'admin')
+        button_enter.click()
+        # Wait for footer
+        WebDriverWait(self.selenium, 5).until(EC.visibility_of_element_located((By.CLASS_NAME, "mt-auto")))
+
+    def test_create_button_clickable(self):
+        path_list = f"{self.live_server_url}{reverse('mainapp:news')}"
+        path_add = reverse("mainapp:news_create")
+        self.selenium.get(path_list)
+        button_create = WebDriverWait(self.selenium, 5).until(
+            EC.visibility_of_element_located((By.CSS_SELECTOR, f'[href="{path_add}"]'))
+        )
+        print("Trying to click button ...")
+        button_create.click()  # Test that button clickable
+        WebDriverWait(self.selenium, 5).until(EC.visibility_of_element_located((By.ID, "id_title")))
+        print("Button clickable!")
+
+    def test_pick_color(self):
+        path = f"{self.live_server_url}{reverse('mainapp:index')}"
+        self.selenium.get(path)
+        navbar_el = WebDriverWait(self.selenium, 5).until(EC.visibility_of_element_located((By.CLASS_NAME, "navbar")))
+        try:
+            self.assertEqual(
+                navbar_el.value_of_css_property("background-color"),
+                "rgb(255, 255, 155)",
+            )
+        except AssertionError:
+            with open("braniaclms/log/navbar_el_scrnsht.png", "wb") as outf:
+                outf.write(navbar_el.screenshot_as_png)
+            raise
+
+    def tearDown(self):
+        # Close browser
+        self.selenium.quit()
+        super().tearDown()

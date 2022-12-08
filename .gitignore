@@ -131,3 +131,4 @@ dmypy.json
 braniac/github_keys.py
 log
 emails-tmp
+selenium
