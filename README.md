@@ -3,4 +3,4 @@ Educational Django project
 
 
 Нагрузочный пользовательский тест финальной сборки, с помощью Locust
-![image](https://user-images.githubusercontent.com/96382702/206856800-ebde6b7b-ac9e-4574-89ca-2b899fbd9b10.png)
+![image](https://user-images.githubusercontent.com/96382702/206856868-95d42fe5-d9ba-4422-b07a-5eb7939cc3a2.png)
