@@ -132,3 +132,4 @@ braniac/github_keys.py
 log
 emails-tmp
 selenium
+locustfile.py
