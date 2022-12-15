@@ -15,6 +15,7 @@ Project supports this packages:
   (feedback allows you to send letters by direct to your work email)
 - Full support for Admin and Moderator users with Django admin panel.
 - Deep instruments for tunning news, courses, contacts and etc. Include fixtures and templates.
+- Product version use Gunicorn and Nginx for API
 
 
 
