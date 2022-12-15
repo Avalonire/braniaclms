@@ -184,39 +184,39 @@ CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = 'emails-tmp'
 
-# LOGGING = {
-#     # Версия логирования
-#     "version": 1,
-#
-#     # флаг отключения текущих логгеров
-#     "disable_existing_loggers": False,
-#
-#     # форматирование вывода
-#     "formatters": {
-#         "console": {
-#             'format': '[%(asctime)s] %(levelname)s %(name)s (%(lineno)d) %(message)s'
-#         },
-#     },
-#     # какие логгеры используются
-#     'handlers': {
-#         'file': {
-#             'level': 'INFO',
-#             'class': 'logging.FileHandler',
-#             'filename': LOG_FILE,
-#             'formatter': 'console',
-#         },
-#         'console': {
-#             'class': 'logging.StreamHandler',
-#             'formatter': 'console',
-#         },
-#     },
-#     # подключение настроек для логгеров
-#     'loggers': {
-#         'django': {
-#             'level': 'INFO',
-#             'handlers': ['file', 'console']},
-#     },
-# }
+LOGGING = {
+    # Версия логирования
+    "version": 1,
+
+    # флаг отключения текущих логгеров
+    "disable_existing_loggers": True,
+
+    # форматирование вывода
+    "formatters": {
+        "console": {
+            'format': '[%(asctime)s] %(levelname)s %(name)s (%(lineno)d) %(message)s'
+        },
+    },
+    # какие логгеры используются
+    'handlers': {
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': LOG_FILE,
+            'formatter': 'console',
+        },
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'console',
+        },
+    },
+    # подключение настроек для логгеров
+    'loggers': {
+        'django': {
+            'level': 'INFO',
+            'handlers': ['file', 'console']},
+    },
+}
 
 LOCALE_PATHS = [BASE_DIR / 'locale']
 
